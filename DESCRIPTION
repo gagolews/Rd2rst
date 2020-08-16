@@ -16,7 +16,7 @@ Description: I do not intend to publish this package on CRAN atm,
 BugReports: https://github.com/gagolews/Rd2rst/issues
 URL: https://github.com/gagolews/Rd2rst
 License: AGPL-3
-Imports:
+Depends:
     tools,
     utils,
     stringi
