@@ -1,0 +1,17 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\.git
+^\.ipynb_checkpoints
+^\.nojekyll
+^\.gitignore$
+^\.travis\.yml$
+^.appveyor
+^appveyor
+^devel
+^README
+^Makefile$
+^LICENSE$
+^coverage
+^\.coverage
+^codecov
+^htmlcov
