@@ -93,7 +93,11 @@ Rd2rst <- function(package) {
         writeLines(orst, oname)
 
         cat(" done.\n")
+
     }
+
+    stopifnot(length(index) > 0)
+    if (!is.matrix(index)) index <- matrix(index, nrow=1)
 
 
     rapi_index_title <- sprintf("R Package *%s* Reference", package)
