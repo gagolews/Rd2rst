@@ -1,29 +1,27 @@
-# (C) 2020 Marek Gagolewski, https://www.gagolewski.com
+# Copyleft (C) 2020-2021, Marek Gagolewski <https://www.gagolewski.com>
 
 
-.PHONY: r r-check r-build t-test clean
+.PHONY: r check build test clean
+PKGNAME="Rd2rst"
 
 all: r
 
 r:
-	#Rscript -e 'Rcpp::compileAttributes()'
-	#R CMD INSTALL .
-	# AVOID ADDING THE -O0 flag!!!
-	#Rscript -e 'roxygen2::roxygenise(roclets=c("rd", "collate", "namespace", "vignette"), load_code=roxygen2::load_installed)'
+	# autoconf
+	# Rscript -e 'roxygen2::roxygenise(roclets=c("rd", "collate", "namespace", "vignette"), load_code=roxygen2::load_installed)'
 	R CMD INSTALL .
 
-r-check: r
-	Rscript -e 'devtools::check()'
+test: r
+	# Rscript -e 'source("devel/tinytest.R")'
 
-r-test: r
-	#Rscript -e 'options(width=120); source("devel/testthat.R")'
+build:
+	cd .. && R CMD INSTALL ${PKGNAME} --preclean --html
+	cd .. && R CMD ${PKGNAME} Rd2rst
+	make clean
 
-
-r-build:
-	#Rscript -e 'Rcpp::compileAttributes()'
-	#Rscript -e 'roxygen2::roxygenise(roclets=c("rd", "collate", "namespace", "vignette"))'
-	R CMD INSTALL . --preclean
-	R CMD build .
+check: build
+	cd .. && R CMD check `ls -t ${PKGNAME}*.tar.gz | head -1` --no-manual
 
 clean:
-	rm -f src/*.o src/*.so
+	find src -name '*.o' -exec rm {} \;
+	find src -name '*.so' -exec rm {} \;

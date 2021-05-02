@@ -29,4 +29,4 @@ we can together come up with something more useful.
 Also, it would be nice to implement a standalone Sphinx domain for R.
 See https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html
 and https://www.sphinx-doc.org/en/master/extdev/domainapi.html.
-Wanna do it together? Drop me an email. Cheers.
+Want to do it together? Drop me an email. Cheers.

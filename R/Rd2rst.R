@@ -2,7 +2,7 @@
 #                                                                              #
 #   Converts an R package's documentation to reStructuredText (.rst)           #
 #                                                                              #
-#   Copyleft (C) 2020, Marek Gagolewski <https://www.gagolewski.com>           #
+#   Copyleft (C) 2020-2021, Marek Gagolewski <https://www.gagolewski.com>      #
 #                                                                              #
 #                                                                              #
 #   This program is free software: you can redistribute it and/or modify       #
@@ -26,10 +26,10 @@
 
 
 # library("stringi")
-# cat("Rd2rst - Copyleft (C) 2020, Marek Gagolewski <https://www.gagolewski.com>\n")
+# cat("Rd2rst - Copyleft (C) 2020-2021, Marek Gagolewski <https://www.gagolewski.com>\n")
 
 # The function works in the current working directory. I'm that lazy. O_O
-# I don't need anything more atm. Cheers.
+
 
 Rd2rst <- function(package) {
     library(package, character.only=TRUE)
