@@ -49,5 +49,6 @@ weave_examples <- function(package, input_dir)
         knitr::knit(oname, iname, quiet=TRUE)
 
         file.remove(oname)
+        cat(" done.\n")
     }
 }

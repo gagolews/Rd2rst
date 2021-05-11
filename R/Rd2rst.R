@@ -23,7 +23,7 @@
 
 
 
-html_process_manpage <- function(fhtml, bname, remove_code_link)
+html_process_manpage <- function(fhtml, bname, remove_code_link, output_dir)
 {
     stopifnot(stri_detect_regex(fhtml[6], "^<table.*</table>$"))
 
@@ -45,9 +45,9 @@ html_process_manpage <- function(fhtml, bname, remove_code_link)
     # -> <a href="stri_datetime_add.html">stri_datetime_add()</a>,
     fhtml <- stri_replace_all_regex(
         fhtml,
-        "<code><a href=\"([^./]+?\\.html)\">(.*?)</a>(.*?)</code>",
-        if (remove_code_link) "<a href=\"$1\">$2$3</a>"
-        else "<a href=\"$1\"><code>$2$3</code></a>"
+        "(<code>)?<a href=\"([^./\"]+?)\\.html\">(.*?)</a>(.*?)(</code>)?",
+        if (remove_code_link) "<a href=\"$2.html\">$3$4</a>"
+        else sprintf("<a href=\"$2.md\">$1$3$4$5</a>", output_dir)
     )
 
 
@@ -62,11 +62,11 @@ html_process_manpage <- function(fhtml, bname, remove_code_link)
     fhtml <- stri_replace_all_regex(
         fhtml,
         sprintf(
-            "<code><a href=\"\\.\\./\\.\\./(%s)/html/([^./]+?\\.html)\">(.*?)</a>(.*?)</code>",
+            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/html/([^./]+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
             stri_flatten(recommended_pkgs, collapse="|")
         ),
-        if (remove_code_link) "<a href=\"https://stat.ethz.ch/R-manual/R-patched/library/$1/html/$2\">$3$4</a>"
-        else "<a href=\"https://stat.ethz.ch/R-manual/R-patched/library/$1/html/$2\"><code>$3$4</code></a>"
+        if (remove_code_link) "<a href=\"https://stat.ethz.ch/R-manual/R-patched/library/$2/html/$3\">$4$5</a>"
+        else "<a href=\"https://stat.ethz.ch/R-manual/R-patched/library/$2/html/$3\">$1$4$5$6</a>"
     )
 
     # ../../stringi/html/xxx.html ->
@@ -76,11 +76,11 @@ html_process_manpage <- function(fhtml, bname, remove_code_link)
     fhtml <- stri_replace_all_regex(
         fhtml,
         sprintf(
-            "<code><a href=\"\\.\\./\\.\\./(%s)/html/([^./]+?\\.html)\">(.*?)</a>(.*?)</code>",
+            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/html/([^./]+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
             stri_flatten(marek_pkgs, collapse="|")
         ),
-        if (remove_code_link) "<a href=\"https://$1.gagolewski.com/rapi/$2\">$3$4</a>"
-        else "<a href=\"https://$1.gagolewski.com/rapi/$2\"><code>$3$4</code></a>"
+        if (remove_code_link) "<a href=\"https://$2.gagolewski.com/rapi/$3\">$4$5</a>"
+        else "<a href=\"https://$2.gagolewski.com/rapi/$3\">$1$4$5$6</code></a>"
     )
 
     fhtml <- stri_replace_all_regex(
@@ -209,7 +209,8 @@ package_process <- function(
         page <- html_process_manpage(
             readLines(file.path(input_path, fname)),
             bname,
-            remove_code_link
+            remove_code_link,
+            output_dir
         )
         writeLines(page$fhtml, tmpname)
 
@@ -220,10 +221,8 @@ package_process <- function(
 
         invisible(file.remove(tmpname))
 
-
         index <- rbind(index, c(bname, page$title))
         cat(" done.\n")
-
     }
 
     stopifnot(length(index) > 0)
