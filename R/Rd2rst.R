@@ -1,6 +1,6 @@
 # ############################################################################ #
 #                                                                              #
-#   Converts an R package's documentation to reStructuredText (.rst)           #
+#   Convert R Documentation to Markedly- (MyST) or reStructuredText (RST)      #
 #                                                                              #
 #   Copyleft (C) 2020-2021, Marek Gagolewski <https://www.gagolewski.com>      #
 #                                                                              #
@@ -25,13 +25,113 @@
 # Hence, it is okay to process them with regexes.
 
 
-# library("stringi")
-# cat("Rd2rst - Copyleft (C) 2020-2021, Marek Gagolewski <https://www.gagolewski.com>\n")
 
-# The function works in the current working directory. I'm that lazy. O_O
+html_process_manpage <- function(fhtml, bname)
+{
+    stopifnot(stri_detect_regex(fhtml[6], "^<table.*</table>$"))
+
+    stopifnot(stri_detect_regex(fhtml[8], "^<h2>.*</h2>$"))
+    title <- stri_match_first_regex(fhtml[8], "^<h2>(.*)</h2>$")[, 2]
 
 
-Rd2rst <- function(package) {
+    fhtml[6] <- sprintf("<h1>%s: %s</h1>", bname, title)
+    fhtml[8] <- ""
+
+
+
+    # Remove link to the index page:
+    stopifnot(stri_detect_fixed(fhtml[length(fhtml)-1], "00Index.html"))
+    fhtml <- fhtml[-(length(fhtml)-1)]
+
+    # Pandoc needs this to convert the links right:
+    #    <code><a href="stri_datetime_add.html">stri_datetime_add</a>()</code>,
+    # -> <a href="stri_datetime_add.html">stri_datetime_add()</a>,
+    fhtml <- stri_replace_all_regex(
+        fhtml,
+        "<code><a href=\"([^./]+?\\.html)\">(.*?)</a>(.*?)</code>",
+        "<a href=\"$1\">$2$3</a>"
+    )
+
+
+    # ../../base/html/xxx.html ->
+    # https://stat.ethz.ch/R-manual/R-patched/library/base/html/xxx.html
+    recommended_pkgs <- c("base", "boot", "class", "cluster", "codetools",
+    "compiler", "datasets", "foreign", "graphics", "grDevices", "grid",
+    "KernSmooth", "lattice", "MASS", "Matrix", "methods", "mgcv", "nlme",
+    "nnet", "parallel", "rpart", "spatial", "splines", "stats", "stats4",
+    "survival", "tcltk", "tools", "utils")
+
+    fhtml <- stri_replace_all_regex(
+        fhtml,
+        sprintf(
+            "<code><a href=\"\\.\\./\\.\\./(%s)/html/([^./]+?\\.html)\">(.*?)</a>(.*?)</code>",
+            stri_flatten(recommended_pkgs, collapse="|")
+        ),
+        "<a href=\"https://stat.ethz.ch/R-manual/R-patched/library/$1/html/$2\">$3$4</a>"
+    )
+
+    # ../../stringi/html/xxx.html ->
+    # https://stringi.gagolewski.com/rapi/stri_info.html
+    marek_pkgs <- c("stringi", "genieclust")
+
+    fhtml <- stri_replace_all_regex(
+        fhtml,
+        sprintf(
+            "<code><a href=\"\\.\\./\\.\\./(%s)/html/([^./]+?\\.html)\">(.*?)</a>(.*?)</code>",
+            stri_flatten(marek_pkgs, collapse="|")
+        ),
+        "<a href=\"https://$1.gagolewski.com/rapi/$2\">$3$4</a>"
+    )
+
+    list(
+        title=title,
+        fhtml=fhtml
+    )
+}
+
+
+
+rst_convert_manpage <- function(iname, oname)
+{
+    orst <- system2("pandoc", stdout=TRUE,
+        args=c(
+            "--from html",
+            "--to rst",
+            "--wrap=none",
+            "--reference-links",
+            iname
+        ))
+    # preformatted code blocks as R code
+    orst <- stri_replace_first_regex(orst, "^::$", ".. code-block:: r")
+
+    writeLines(orst, oname)
+}
+
+
+rst_generate_index <- function(package, output_dir, index)
+{
+    rapi_index_title <- sprintf("R Package *%s* Reference", package)
+    rapi_index <- c(
+        rapi_index_title,
+        stri_dup("=", stri_length(rapi_index_title)),
+        "",
+        ".. toctree::",
+        "    :maxdepth: 1",
+        #"    :caption: API Documentation:",
+        "",
+        sprintf("    %s/%s", output_dir, index[, 1])
+    )
+    rapi_index
+}
+
+
+
+
+package_process <- function(
+    package, output_dir, index_file,
+    output_ext, convert_manpage, generate_index
+)
+{
     library(package, character.only=TRUE)
     input_path <- file.path(path.package(package), "html")
 
@@ -40,11 +140,11 @@ Rd2rst <- function(package) {
     }
 
 
-    # Flush/recreate the output dir, which is rapi/
-    if (dir.exists("rapi")) {
-        unlink("rapi", recursive=TRUE)
+    # Flush/recreate the output dir
+    if (dir.exists(output_dir)) {
+        unlink(output_dir, recursive=TRUE)
     }
-    dir.create("rapi")
+    dir.create(output_dir)
 
     tmpname <- tempfile()
 
@@ -55,43 +155,20 @@ Rd2rst <- function(package) {
     index <- character(0)
     for (fname in fnames) {
         cat(sprintf("Converting %s...", fname))
-        fhtml <- readLines(file.path(input_path, fname))
-
         bname <- stri_match_first_regex(fname, "(.*)\\.html")[, 2]
 
+        page <- html_process_manpage(readLines(file.path(input_path, fname)), bname)
+        writeLines(page$fhtml, tmpname)
 
-        stopifnot(stri_detect_regex(fhtml[6], "^<table.*</table>$"))
+        convert_manpage(
+            tmpname,
+            sprintf(file.path(output_dir, "%s.%s"), bname, output_ext)
+        )
 
-        stopifnot(stri_detect_regex(fhtml[8], "^<h2>.*</h2>$"))
-        title <- stri_match_first_regex(fhtml[8], "^<h2>(.*)</h2>$")[, 2]
-
-        index <- rbind(index, c(bname, title))
-
-        fhtml[6] <- sprintf("<h1>%s: %s</h1>", bname, title)
-        fhtml[8] <- ""
-
+        invisible(file.remove(tmpname))
 
 
-        # Remove link to the index page:
-        stopifnot(stri_detect_fixed(fhtml[length(fhtml)-1], "00Index.html"))
-        fhtml <- fhtml[-(length(fhtml)-1)]
-
-        # Pandoc needs this to convert the links right:
-        #    <code><a href="stri_datetime_add.html">stri_datetime_add</a>()</code>,
-        # -> <a href="stri_datetime_add.html">stri_datetime_add()</a>,
-        fhtml <- stri_replace_all_regex(fhtml, "<code><a href=\"([^./]+?\\.html)\">(.*?)</a>(.*?)</code>", "<a href=\"$1\">$2$3</a>")
-
-        writeLines(fhtml, tmpname)
-
-
-        orst <- system2("pandoc", stdout=TRUE,
-            args=c("--from html", "--to rst", "--wrap=none", tmpname))
-        # preformatted code blocks as R code
-        orst <- stri_replace_first_regex(orst, "^::$", ".. code-block:: r")
-
-        oname <- sprintf("rapi/%s.rst", bname)
-        writeLines(orst, oname)
-
+        index <- rbind(index, c(bname, page$title))
         cat(" done.\n")
 
     }
@@ -99,20 +176,23 @@ Rd2rst <- function(package) {
     stopifnot(length(index) > 0)
     if (!is.matrix(index)) index <- matrix(index, nrow=1)
 
+    writeLines(generate_index(package, output_dir, index), index_file)
 
-    rapi_index_title <- sprintf("R Package *%s* Reference", package)
-    rapi_index <- c(
-        rapi_index_title,
-        stri_dup("=", stri_length(rapi_index_title)),
-        "",
-        ".. toctree::",
-        "    :maxdepth: 1",
-        #"    :caption: API Documentation:",
-        "",
-        sprintf("    rapi/%s", index[, 1])
-    )
-    writeLines(rapi_index, "rapi.rst")
-
-    invisible(file.remove(tmpname))
     invisible(NULL)
 }
+
+
+
+
+#' @param package name of the package
+#' @param output_dir target director - will be wiped out
+#' @param index_file filename with the function index toctree
+Rd2rst <- function(package, output_dir="rapi", index_file="rapi.rst")
+{
+    package_process(
+        package, output_dir, index_file,
+        "rst", rst_convert_manpage, rst_generate_index
+    )
+}
+
+

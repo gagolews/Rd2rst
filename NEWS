@@ -1,0 +1,20 @@
+# CHANGELOG
+
+## Known Issues
+
+* Rd2rst: code in html links is rendered as ordinary text (pandoc/rst issue)
+
+
+## 0.0.2 (2021-XX-XX)
+
+* Linking to https://stat.ethz.ch/R-manual/R-patched/library/base/html/grep.html
+    etc. for recommended R packages
+
+* Linking to https://stringi.gagolewski.com/rapi/stri_info.html
+    etc. for `stringi`
+
+
+
+## 0.0.1 (2020-08-16)
+
+* The project has been established.
