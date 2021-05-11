@@ -16,12 +16,11 @@ test: r
 
 build:
 	cd .. && R CMD INSTALL ${PKGNAME} --preclean --html
-	cd .. && R CMD ${PKGNAME} Rd2rst
-	make clean
+	cd .. && R CMD build ${PKGNAME}
 
 check: build
 	cd .. && R CMD check `ls -t ${PKGNAME}*.tar.gz | head -1` --no-manual
 
 clean:
-	find src -name '*.o' -exec rm {} \;
-	find src -name '*.so' -exec rm {} \;
+	#find src -name '*.o' -exec rm {} \;
+	#find src -name '*.so' -exec rm {} \;

@@ -1,5 +1,5 @@
 # `Rd2rst`
-## Convert R package Documentation to Markedly- (MyST) or reStructuredText (RST)
+## Convert R package Documentation to Markedly- (MyST) or reStructuredText (rST)
 
 Author: [Marek Gagolewski](https://www.gagolewski.com)
 

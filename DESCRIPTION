@@ -1,6 +1,6 @@
 Package: Rd2rst
 Type: Package
-Title: Convert R Documentation to Markedly- (MyST) or reStructuredText (RST)
+Title: Convert R Documentation to Markedly- (MyST) or reStructuredText (rST)
 Version: 0.0.2
 Date: 2021-05-11
 Authors@R: c(
@@ -10,7 +10,7 @@ Authors@R: c(
         comment = c(ORCID = "0000-0003-0637-6028"))
     )
 Description: I do not intend to publish this package on CRAN atm,
-    nor I expect anyone to use it, so why bother. ;)
+    nor I expect anyone to use it, so why bother. :)
     Anyway, see README.md; happy to discuss by email if you're
     keen on extending it.
 BugReports: https://github.com/gagolews/Rd2rst/issues

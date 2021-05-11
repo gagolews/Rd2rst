@@ -3,16 +3,22 @@
 ## Known Issues
 
 * Rd2rst: code in html links is rendered as ordinary text (pandoc/rst issue)
+* Rd2rst: Mathematical formulae support not tested
+* Rd2myst: First row of Arguments table is empty
 
 
 ## 0.0.2 (2021-XX-XX)
+
+* Rd2myst: output to MyST
+
+* Rd2myst: support for display and inline math via `\out{$$..$$}` and
+    `\out{$..$}` in Rd.
 
 * Linking to https://stat.ethz.ch/R-manual/R-patched/library/base/html/grep.html
     etc. for recommended R packages
 
 * Linking to https://stringi.gagolewski.com/rapi/stri_info.html
     etc. for `stringi`
-
 
 
 ## 0.0.1 (2020-08-16)
