@@ -18,7 +18,9 @@ URL: https://github.com/gagolews/Rd2rst
 License: AGPL-3
 Depends:
     tools,
-    utils,
-    stringi
+    utils
+Imports:
+    stringi,
+    knitr
 Encoding: UTF-8
 SystemRequirements: pandoc

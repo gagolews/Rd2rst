@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Supported Features
+
+* weave_examples: figures
+* Rd2myst: support for display and inline math via `\out{$$..$$}` and
+    `\out{$..$}` in Rd.
+
+
 ## Known Issues
 
 * Rd2rst: code in html links is rendered as ordinary text (pandoc/rst issue)
@@ -9,10 +16,9 @@
 
 ## 0.0.2 (2021-XX-XX)
 
-* Rd2myst: output to MyST
+* weave_examples
 
-* Rd2myst: support for display and inline math via `\out{$$..$$}` and
-    `\out{$..$}` in Rd.
+* Rd2myst
 
 * Linking to https://stat.ethz.ch/R-manual/R-patched/library/base/html/grep.html
     etc. for recommended R packages
