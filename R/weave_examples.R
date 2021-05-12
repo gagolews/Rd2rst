@@ -41,7 +41,7 @@ weave_examples <- function(package, input_dir)
                 "```{r echo=FALSE,warning=FALSE,message=FALSE,results='hide'}\n",
                 sprintf("library('%s')\n", package),
                 "```\n\n",
-                sprintf("```{r %s}\n", page)
+                sprintf("```{r %s,error=FALSE}\n", page)
             )
         )
         cat(f, file=oname)
