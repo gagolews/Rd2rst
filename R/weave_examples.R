@@ -39,6 +39,7 @@ weave_examples <- function(package, input_dir)
             paste0(
                 "## Examples\n\n",
                 "```{r echo=FALSE,warning=FALSE,message=FALSE,results='hide'}\n",
+                "set.seed(123)\n",
                 sprintf("library('%s')\n", package),
                 "```\n\n",
                 sprintf("```{r %s,error=FALSE}\n", page)
