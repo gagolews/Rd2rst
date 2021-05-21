@@ -62,7 +62,7 @@ html_process_manpage <- function(fhtml, bname, remove_code_link, output_dir)
     fhtml <- stri_replace_all_regex(
         fhtml,
         sprintf(
-            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/html/([^./]+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
+            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/(?:html|help)/([^./]+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
             stri_flatten(recommended_pkgs, collapse="|")
         ),
         if (remove_code_link) "<a href=\"https://stat.ethz.ch/R-manual/R-patched/library/$2/html/$3\">$4$5</a>"
@@ -76,7 +76,7 @@ html_process_manpage <- function(fhtml, bname, remove_code_link, output_dir)
     fhtml <- stri_replace_all_regex(
         fhtml,
         sprintf(
-            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/html/([^./]+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
+            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/(?:html|help)/([^./]+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
             stri_flatten(marek_pkgs, collapse="|")
         ),
         if (remove_code_link) "<a href=\"https://$2.gagolewski.com/rapi/$3\">$4$5</a>"
