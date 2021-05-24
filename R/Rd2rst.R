@@ -47,7 +47,7 @@ html_process_manpage <- function(fhtml, bname, remove_code_link, output_dir)
         fhtml,
         "(<code>)?<a href=\"([^./\"]+?)\\.html\">(.*?)</a>(.*?)(</code>)?",
         if (remove_code_link) "<a href=\"$2.html\">$3$4</a>"
-        else sprintf("<a href=\"$2.md\">$1$3$4$5</a>", output_dir)
+        else sprintf("<a href=\"$2.md\">$1$3$4$5</a>")
     )
 
 

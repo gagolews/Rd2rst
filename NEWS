@@ -14,7 +14,7 @@
 * Rd2myst: First row of Arguments table is empty
 
 
-## 0.0.2 (2021-XX-XX)
+## 0.1.0.9xxx (to-be >= 0.1.1) (2021-XX-XX)
 
 * weave_examples
 
@@ -27,6 +27,6 @@
     etc. for `stringi`
 
 
-## 0.0.1 (2020-08-16)
+## 0.0.0 (2020-08-16)
 
 * The project has been established.
