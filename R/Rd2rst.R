@@ -54,6 +54,7 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
         )))
 
     for (marek_pkg in unique(marek_redir[, 2])) {
+        library(marek_pkg, character.only=TRUE)
         aliases <- readRDS(file.path(path.package(marek_pkg), "help", "aliases.rds"))
         from <- unique(marek_redir[marek_redir[, 2] == marek_pkg, 3])
         to <- aliases[from]
