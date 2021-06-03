@@ -57,7 +57,11 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
         library(marek_pkg, character.only=TRUE)
         aliases <- readRDS(file.path(path.package(marek_pkg), "help", "aliases.rds"))
         from <- unique(marek_redir[marek_redir[, 2] == marek_pkg, 3])
+        from <- stri_replace_all_regex(from, "%([0-9A-Fa-f][0-9A-Fa-f])", "\\u00$1")
+        from <- stri_unescape_unicode(from)
         to <- aliases[from]
+        to[is.na(to)] <- from[is.na(to)]  # fallback
+
         fhtml <- stri_replace_all_fixed(
             fhtml,
             sprintf(
