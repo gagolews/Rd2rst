@@ -57,9 +57,8 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
         library(marek_pkg, character.only=TRUE)
         aliases <- readRDS(file.path(path.package(marek_pkg), "help", "aliases.rds"))
         from <- unique(marek_redir[marek_redir[, 2] == marek_pkg, 3])
-        from <- stri_replace_all_regex(from, "%([0-9A-Fa-f][0-9A-Fa-f])", "\\u00$1")
-        from <- stri_unescape_unicode(from)
-        to <- aliases[from]
+        from2 <- stri_unescape_unicode(stri_replace_all_regex(from, "%([0-9A-Fa-f][0-9A-Fa-f])", "\\\\u00$1"))
+        to <- aliases[from2]
         to[is.na(to)] <- from[is.na(to)]  # fallback
 
         fhtml <- stri_replace_all_fixed(
@@ -89,9 +88,16 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     # -> <a href="stri_datetime_add.html">stri_datetime_add()</a>,
     fhtml <- stri_replace_all_regex(
         fhtml,
-        "(<code>)?<a href=\"([^/]+?)\\.html\">(.*?)</a>(.*?)(</code>)?",
-        if (remove_code_link) "<a href=\"$2.html\">$3$4</a>"
-        else sprintf("<a href=\"$2.md\">$1$3$4$5</a>")
+        "<code><a href=\"([^/]+?)\\.html\">(.*?)</a>(.*?)</code>",
+        if (remove_code_link) "<a href=\"$1.html\">$2$3</a>" # TODO: .html? .rst?
+        else "<a href=\"$1.md\"><code>$2$3</code></a>"
+    )
+
+    fhtml <- stri_replace_all_regex(
+        fhtml,
+        "<a href=\"([^/]+?)\\.html\">(.*?)</a>",
+        if (remove_code_link) "<a href=\"$1.html\">$2</a>" # TODO: .html? .rst?
+        else "<a href=\"$1.md\">$2</a>"
     )
 
 
@@ -108,11 +114,20 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     fhtml <- stri_replace_all_regex(
         fhtml,
         sprintf(
-            "(<code>)?<a href=\"\\.\\./\\.\\./((?:%s)/(?:html|help)/.+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
+            "<code><a href=\"\\.\\./\\.\\./((?:%s)/(?:html|help)/.+?\\.html)\">(.*?)</a>(.*?)</code>",
             stri_flatten(recommended_pkgs, collapse="|")
         ),
-        if (remove_code_link) "<a href=\"https://stat.ethz.ch/R-manual/R-devel/library/$2\">$3$4</a>"
-        else "<a href=\"https://stat.ethz.ch/R-manual/R-devel/library/$2\">$1$3$4$5</a>"
+        if (remove_code_link) "<a href=\"https://stat.ethz.ch/R-manual/R-devel/library/$1\">$2$3</a>"
+        else "<a href=\"https://stat.ethz.ch/R-manual/R-devel/library/$1\"><code>$2$3</code></a>"
+    )
+
+    fhtml <- stri_replace_all_regex(
+        fhtml,
+        sprintf(
+            "<a href=\"\\.\\./\\.\\./((?:%s)/(?:html|help)/.+?\\.html)\">(.*?)</a>",
+            stri_flatten(recommended_pkgs, collapse="|")
+        ),
+        "<a href=\"https://stat.ethz.ch/R-manual/R-devel/library/$1\">$2</a>"
     )
 
 
@@ -121,11 +136,20 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     fhtml <- stri_replace_all_regex(
         fhtml,
         sprintf(
-            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/html/(.+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
+            "<code><a href=\"\\.\\./\\.\\./(%s)/html/(.+?\\.html)\">(.*?)</a>(.*?)</code>",
             stri_flatten(marek_pkgs, collapse="|")
         ),
-        if (remove_code_link) "<a href=\"https://$2.gagolewski.com/rapi/$3\">$4$5</a>"
-        else "<a href=\"https://$2.gagolewski.com/rapi/$3\">$1$4$5$6</code></a>"
+        if (remove_code_link) "<a href=\"https://$1.gagolewski.com/rapi/$2\">$3$4</a>"
+        else "<a href=\"https://$1.gagolewski.com/rapi/$2\"><code>$3$4</code></a>"
+    )
+
+    fhtml <- stri_replace_all_regex(
+        fhtml,
+        sprintf(
+            "<a href=\"\\.\\./\\.\\./(%s)/html/(.+?\\.html)\">(.*?)</a>",
+            stri_flatten(marek_pkgs, collapse="|")
+        ),
+        "<a href=\"https://$1.gagolewski.com/rapi/$2\">$3</a>"
     )
 
     fhtml <- stri_replace_all_regex(
