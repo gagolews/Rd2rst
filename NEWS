@@ -11,6 +11,7 @@
 
 * Rd2rst: code in html links is rendered as ordinary text (pandoc/rst issue)
 * Rd2rst: Mathematical formulae support not tested
+* Rd2myst: Mathematical formulae support not tested
 * Rd2myst: First row of Arguments table is empty
 
 
@@ -24,7 +25,7 @@
     etc. for recommended R packages
 
 * Linking to https://stringi.gagolewski.com/rapi/stri_info.html
-    etc. for `stringi`
+    etc. for `stringi` and other Marek's packages
 
 
 ## 0.0.0 (2020-08-16)

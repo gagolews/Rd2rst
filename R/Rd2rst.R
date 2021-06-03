@@ -23,7 +23,7 @@
 
 
 
-html_process_manpage <- function(fhtml, bname, remove_code_link, output_dir)
+html_process_manpage <- function(package, fhtml, bname, remove_code_link, output_dir)
 {
     stopifnot(stri_detect_regex(fhtml[6], "^<table.*</table>$"))
 
@@ -34,49 +34,89 @@ html_process_manpage <- function(fhtml, bname, remove_code_link, output_dir)
     fhtml[6] <- sprintf("<h1>%s: %s</h1>", bname, title)
     fhtml[8] <- ""
 
-
-
     # Remove link to the index page:
     stopifnot(stri_detect_fixed(fhtml[length(fhtml)-1], "00Index.html"))
     fhtml <- fhtml[-(length(fhtml)-1)]
+
+
+
+
+    marek_pkgs <- c("stringi", "genieclust", "stringx", "realtest")
+
+    # deal with aliases first
+    # ../../stringi/help/xxx.html ->
+    # https://stringi.gagolewski.com/rapi/yyy.html
+
+    marek_redir <- do.call(rbind, stri_match_all_regex(fhtml, omit_no_match=TRUE,
+        sprintf(
+            "<a href=\"\\.\\./\\.\\./(%s)/help/(.+?)\\.html\">(?:.*?)</a>",
+            stri_flatten(marek_pkgs, collapse="|")
+        )))
+
+    for (marek_pkg in unique(marek_redir[, 2])) {
+        aliases <- readRDS(file.path(path.package(marek_pkg), "help", "aliases.rds"))
+        from <- unique(marek_redir[marek_redir[, 2] == marek_pkg, 3])
+        to <- aliases[from]
+        fhtml <- stri_replace_all_fixed(
+            fhtml,
+            sprintf(
+                "<a href=\"../../%s/help/%s.html\">",
+                marek_pkg, from
+            ),
+            if (marek_pkg == package) {
+                sprintf(
+                    "<a href=\"%s.html\">",
+                    to
+                )
+            } else {
+                sprintf(
+                    "<a href=\"../../%s/html/%s.html\">",
+                    marek_pkg, to
+                )
+            },
+            vectorise_all=FALSE
+        )
+    }
+
 
     # Pandoc needs this to convert the links right:
     #    <code><a href="stri_datetime_add.html">stri_datetime_add</a>()</code>,
     # -> <a href="stri_datetime_add.html">stri_datetime_add()</a>,
     fhtml <- stri_replace_all_regex(
         fhtml,
-        "(<code>)?<a href=\"([^./\"]+?)\\.html\">(.*?)</a>(.*?)(</code>)?",
+        "(<code>)?<a href=\"([^/]+?)\\.html\">(.*?)</a>(.*?)(</code>)?",
         if (remove_code_link) "<a href=\"$2.html\">$3$4</a>"
         else sprintf("<a href=\"$2.md\">$1$3$4$5</a>")
     )
 
 
-    # ../../base/html/xxx.html ->
-    # https://stat.ethz.ch/R-manual/R-patched/library/base/html/xxx.html
+    # ../../(package)/(html|help)/xxx.html ->
+    # https://stat.ethz.ch/R-manual/R-patched/library/(package)/(html|help)/xxx.html
     recommended_pkgs <- c("base", "boot", "class", "cluster", "codetools",
     "compiler", "datasets", "foreign", "graphics", "grDevices", "grid",
     "KernSmooth", "lattice", "MASS", "Matrix", "methods", "mgcv", "nlme",
     "nnet", "parallel", "rpart", "spatial", "splines", "stats", "stats4",
     "survival", "tcltk", "tools", "utils")
 
+    # TODO: use aliases.rds?
+    # TODO: the links may be different (R-devel vs. R-patched vs. my local R)
     fhtml <- stri_replace_all_regex(
         fhtml,
         sprintf(
-            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/(?:html|help)/([A-Za-z0-9_.]+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
+            "(<code>)?<a href=\"\\.\\./\\.\\./((?:%s)/(?:html|help)/.+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
             stri_flatten(recommended_pkgs, collapse="|")
         ),
-        if (remove_code_link) "<a href=\"https://stat.ethz.ch/R-manual/R-patched/library/$2/html/$3\">$4$5</a>"
-        else "<a href=\"https://stat.ethz.ch/R-manual/R-patched/library/$2/html/$3\">$1$4$5$6</a>"
+        if (remove_code_link) "<a href=\"https://stat.ethz.ch/R-manual/R-devel/library/$2\">$3$4</a>"
+        else "<a href=\"https://stat.ethz.ch/R-manual/R-devel/library/$2\">$1$3$4$5</a>"
     )
 
-    # ../../stringi/html/xxx.html ->
-    # https://stringi.gagolewski.com/rapi/stri_info.html
-    marek_pkgs <- c("stringi", "genieclust", "stringx", "realtest")
 
+    # ../../stringi/html/xxx.html ->
+    # https://stringi.gagolewski.com/rapi/xxx.html
     fhtml <- stri_replace_all_regex(
         fhtml,
         sprintf(
-            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/(?:html|help)/([A-Za-z0-9_.]+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
+            "(<code>)?<a href=\"\\.\\./\\.\\./(%s)/html/(.+?\\.html)\">(.*?)</a>(.*?)(</code>)?",
             stri_flatten(marek_pkgs, collapse="|")
         ),
         if (remove_code_link) "<a href=\"https://$2.gagolewski.com/rapi/$3\">$4$5</a>"
@@ -98,7 +138,6 @@ html_process_manpage <- function(fhtml, bname, remove_code_link, output_dir)
         fhtml=fhtml
     )
 }
-
 
 
 rst_convert_manpage <- function(iname, oname)
@@ -133,7 +172,6 @@ rst_generate_index <- function(package, output_dir, index)
     )
     rapi_index
 }
-
 
 
 myst_convert_manpage <- function(iname, oname)
@@ -188,7 +226,6 @@ package_process <- function(
             "Use `R CMD INSTALL <package_path> --html`."))
     }
 
-
     # Flush/recreate the output dir
     if (dir.exists(output_dir)) {
         unlink(output_dir, recursive=TRUE)
@@ -207,6 +244,7 @@ package_process <- function(
         bname <- stri_match_first_regex(fname, "(.*)\\.html")[, 2]
 
         page <- html_process_manpage(
+            package,
             readLines(file.path(input_path, fname)),
             bname,
             remove_code_link,
