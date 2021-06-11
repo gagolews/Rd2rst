@@ -47,7 +47,15 @@ weave_examples <- function(package, input_dir)
         )
         cat(f, file=oname)
 
-        knitr::knit(oname, iname, quiet=TRUE)
+        # NO: knitr::knit(oname, iname, quiet=TRUE); we should rather start a new process
+
+        stopifnot(0 == system2("Rscript", c(
+            '--vanilla',
+            sprintf(
+                '-e \'suppressMessages(knitr::knit("%s", "%s", quiet=TRUE))\'',
+                oname, iname
+            )
+        ), stdout=FALSE))
 
         file.remove(oname)
         cat(" done.\n")

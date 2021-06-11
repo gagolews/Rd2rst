@@ -8,8 +8,10 @@ System requirements: `pandoc`
 > Caution: not tested on humans and other animals.
 This package in its current version is not intended to serve any
 purpose other than generating the awesome API documentation
-for the [genieclust](https://genieclust.gagolewski.com)
-and [stringi](https://stringi.gagolewski.com)
+for the
+[genieclust](https://genieclust.gagolewski.com),
+[stringi](https://stringi.gagolewski.com),
+and [realtest](https://realtest.gagolewski.com)
 packages.
 
 
