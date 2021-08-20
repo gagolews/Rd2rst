@@ -33,6 +33,9 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     stopifnot(stri_detect_regex(fhtml[w2], "^<h2>.*</h2>$"))
     title <- stri_match_first_regex(fhtml[w2], "^<h2>(.*)</h2>$")[, 2]
 
+    fhtml <- stri_replace_all_fixed(fhtml, '<body><div class="container">', '<body>')
+    fhtml <- stri_replace_all_fixed(fhtml, '</div></body>', '</body>')
+
 
     fhtml[w1] <- sprintf("<h1>%s: %s</h1>", bname, title)
     fhtml[w2] <- ""
