@@ -25,14 +25,17 @@
 
 html_process_manpage <- function(package, fhtml, bname, remove_code_link, output_dir)
 {
-    stopifnot(stri_detect_regex(fhtml[6], "^<table.*</table>$"))
+    w1 <- min(which(stri_detect_regex(fhtml, "^<table.*</table>$")))
+    w2 <- min(which(stri_detect_regex(fhtml, "^<h2>.*</h2>$")))
 
-    stopifnot(stri_detect_regex(fhtml[8], "^<h2>.*</h2>$"))
-    title <- stri_match_first_regex(fhtml[8], "^<h2>(.*)</h2>$")[, 2]
+    stopifnot(stri_detect_regex(fhtml[w1], "^<table.*</table>$"))
+
+    stopifnot(stri_detect_regex(fhtml[w2], "^<h2>.*</h2>$"))
+    title <- stri_match_first_regex(fhtml[w2], "^<h2>(.*)</h2>$")[, 2]
 
 
-    fhtml[6] <- sprintf("<h1>%s: %s</h1>", bname, title)
-    fhtml[8] <- ""
+    fhtml[w1] <- sprintf("<h1>%s: %s</h1>", bname, title)
+    fhtml[w2] <- ""
 
     # Remove link to the index page:
     stopifnot(stri_detect_fixed(fhtml[length(fhtml)-1], "00Index.html"))
