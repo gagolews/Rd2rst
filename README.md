@@ -1,6 +1,8 @@
 # `Rd2rst`
 ## Convert R package Documentation to Markedly- (MyST) or reStructuredText (rST)
 
+> Note: rST support is deprecated and probably doesn't work anymore.
+
 Author: [Marek Gagolewski](https://www.gagolewski.com)
 
 System requirements: `pandoc`
@@ -11,6 +13,7 @@ purpose other than generating the awesome API documentation
 for the
 [genieclust](https://genieclust.gagolewski.com),
 [stringi](https://stringi.gagolewski.com),
+[stringx](https://stringx.gagolewski.com),
 and [realtest](https://realtest.gagolewski.com)
 packages.
 

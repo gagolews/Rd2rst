@@ -1,4 +1,4 @@
-# Copyleft (C) 2020-2021, Marek Gagolewski <https://www.gagolewski.com>
+# Copyleft (C) 2020-2022, Marek Gagolewski <https://www.gagolewski.com>
 
 
 .PHONY: r check build test clean
@@ -13,7 +13,7 @@ r:
 	R CMD INSTALL .
 
 test: r
-	# Rscript -e 'source("devel/tinytest.R")'
+	# Rscript -e 'source("devel/realtest.R")'
 
 stop-on-utf8:
 	# Stop if some files are not in ASCII:

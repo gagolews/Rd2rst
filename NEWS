@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## TODO
+
+* drop support for rst, as I no longer use it
+
 ## Supported Features
 
 * weave_examples: figures
@@ -15,7 +19,7 @@
 * Rd2myst: First row of Arguments table is empty
 
 
-## 0.1.0.9xxx (to-be >= 0.1.1) (2021-XX-XX)
+## 0.1.0.9xxx (to-be >= 0.1.1) (under development)
 
 * weave_examples
 
