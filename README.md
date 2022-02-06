@@ -1,4 +1,4 @@
-# `Rd2rst`
+# `Rd2rst` [EXPERIMENTAL]
 ## Convert R package Documentation to Markedly- (MyST) or reStructuredText (rST)
 
 > Note: rST support is deprecated and probably doesn't work anymore.
