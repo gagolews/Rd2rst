@@ -34,8 +34,8 @@ weave_examples <- function(package, input_dir)
 
         f <- readLines(iname)
         f <- stri_flatten(f, collapse="\n")
-        f <- stri_replace_last_fixed(f,
-            "## Examples\n\n```r\n",
+        f <- stri_replace_first_regex(f,
+            "## Examples\n\n```[ ]?r\n",
             paste0(
                 "## Examples\n\n",
                 "```{r echo=FALSE,warning=FALSE,message=FALSE,results='hide'}\n",

@@ -215,7 +215,7 @@ myst_convert_manpage <- function(iname, oname)
         args=c(
             "--from html+tex_math_dollars",
             "--to markdown+backtick_code_blocks+tex_math_dollars-simple_tables-multiline_tables-bracketed_spans",
-            "--atx-headers", #"--markdown-headings=atx",
+            "--markdown-headings=atx",
             "--wrap=none",
 #             "--indented-code-classes=r",
             #"--reference-links",
