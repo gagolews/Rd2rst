@@ -34,15 +34,16 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     title <- stri_match_first_regex(fhtml[w2], "^<h2>(.*)</h2>$")[, 2]
 
     fhtml <- stri_replace_all_fixed(fhtml, '<body><div class="container">', '<body>')
-    fhtml <- stri_replace_all_fixed(fhtml, '</div></body>', '</body>')
+    i <- max(which(stri_detect_fixed(fhtml, "</div>")))
+    fhtml[i] <- stri_replace_all_fixed(fhtml[i], '</div>', '')
 
 
     fhtml[w1] <- sprintf("<h1>%s: %s</h1>", bname, title)
     fhtml[w2] <- ""
 
     # Remove link to the index page:
-    stopifnot(stri_detect_fixed(fhtml[length(fhtml)-1], "00Index.html"))
-    fhtml <- fhtml[-(length(fhtml)-1)]
+    stopifnot(stri_detect_fixed(fhtml[length(fhtml)-2], "00Index.html"))
+    fhtml <- fhtml[-(length(fhtml)-2)]
 
 
 

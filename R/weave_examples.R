@@ -18,11 +18,8 @@
 # ############################################################################ #
 
 
-# This is a stupid function too. That's why we all love it.
-
-
-
 #' @param package name of the package
+#' @param input_dir Spanish Inquisition
 weave_examples <- function(package, input_dir)
 {
     fnames <- list.files(input_dir, "\\.md$")
