@@ -117,7 +117,7 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     "survival", "tcltk", "tools", "utils")
 
     # TODO: use aliases.rds?
-    # TODO: the links may be different (R-devel vs. R-patched vs. my local R)
+    # TODO: the links may be different (R-devel vs R-patched vs my local R)
     fhtml <- stri_replace_all_regex(
         fhtml,
         sprintf(
@@ -168,6 +168,12 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     fhtml <- stri_replace_all_regex(fhtml, "^<h2>(.*)</h2>$", "<h1>$1</h1>")
     fhtml <- stri_replace_all_regex(fhtml, "^<h3>(.*)</h3>$", "<h2>$1</h2>")
     fhtml <- stri_replace_all_regex(fhtml, "^<h4>(.*)</h4>$", "<h3>$1</h3>")
+
+    fhtml <- stri_flatten(fhtml, collapse="\n")
+    fhtml <- stri_replace_all_regex(fhtml,
+        '<p style="text-align: center;">\\s*?<code class="reqn">\\s*?(.*?)\\s*?</code>\\s*?</p>', '\\$\\$$1\\$\\$', dotall=TRUE)
+    fhtml <- stri_replace_all_regex(fhtml,
+        '<code class="reqn">\\s*?(.*?)\\s*?</code>', '\\$$1\\$', dotall=TRUE)
 
     list(
         title=title,
@@ -224,6 +230,10 @@ myst_convert_manpage <- function(iname, oname)
         ))
     # preformatted code blocks as R code
     orst <- stri_replace_first_regex(orst, "^``` \\{\\.r\\}$", "```r")
+
+#     # math
+#     orst <- stri_replace_all_regex(orst, "\\\\(", "\\(")
+#     orst <- stri_replace_all_fixed(orst, "\\\\)", "\\)")
 
     writeLines(orst, oname)
 }

@@ -29,7 +29,7 @@ Yet, it's far from perfect with regards to mathematical formulae.
 
 I have no time to implement a full-fledged parser.
 Feel free to contact me to discuss further ideas and maybe
-we can together come up with something more useful.
+we can come up with something more useful together.
 
 Also, it would be nice to implement a standalone Sphinx domain for R.
 See https://www.sphinx-doc.org/en/master/usage/restructuredtext/domains.html

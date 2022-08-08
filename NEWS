@@ -7,15 +7,14 @@
 ## Supported Features
 
 * weave_examples: figures
-* Rd2myst: support for display and inline math via `\out{$$..$$}` and
-    `\out{$..$}` in Rd.
+* Rd2myst: basic support for inline math
 
 
 ## Known Issues
 
 * Rd2rst: code in html links is rendered as ordinary text (pandoc/rst issue)
 * Rd2rst: Mathematical formulae support not tested
-* Rd2myst: Mathematical formulae support not tested
+
 * Rd2myst: First row of Arguments table is empty
 
 
