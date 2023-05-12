@@ -22,7 +22,6 @@
 # Hence, it is okay to process them with regexes.
 
 
-
 html_process_manpage <- function(package, fhtml, bname, remove_code_link, output_dir)
 {
     w1 <- min(which(stri_detect_regex(fhtml, "^<table.*</table>$")))
@@ -46,7 +45,7 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     fhtml <- fhtml[-(length(fhtml)-2)]
 
 
-
+    fhtml <- stri_replace_all_regex(fhtml, "<code id=\".*?\">", "<code>")
 
     marek_pkgs <- c("stringi", "genieclust", "stringx", "realtest")
 
@@ -60,7 +59,8 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
             stri_flatten(marek_pkgs, collapse="|")
         )))
 
-    for (marek_pkg in unique(marek_redir[, 2])) {
+    for (marek_pkg in unique(marek_redir[, 2]))
+    {
         library(marek_pkg, character.only=TRUE)
         aliases <- readRDS(file.path(path.package(marek_pkg), "help", "aliases.rds"))
         from <- unique(marek_redir[marek_redir[, 2] == marek_pkg, 3])
