@@ -26,12 +26,12 @@
 html_process_manpage <- function(package, fhtml, bname, remove_code_link, output_dir)
 {
     w1 <- min(which(stri_detect_regex(fhtml, "^<table.*</table>$")))
-    w2 <- min(which(stri_detect_regex(fhtml, "^<h2>.*</h2>$")))
+    w2 <- min(which(stri_detect_regex(fhtml, "^<h2.*>.*</h2>$")))
 
     stopifnot(stri_detect_regex(fhtml[w1], "^<table.*</table>$"))
 
-    stopifnot(stri_detect_regex(fhtml[w2], "^<h2>.*</h2>$"))
-    title <- stri_match_first_regex(fhtml[w2], "^<h2>(.*)</h2>$")[, 2]
+    stopifnot(stri_detect_regex(fhtml[w2], "^<h2.*>.*</h2>$"))
+    title <- stri_match_first_regex(fhtml[w2], "^<h2.*>(.*)</h2>$")[, 2]
 
     fhtml <- stri_replace_all_fixed(fhtml, '<body><div class="container">', '<body>')
     i <- max(which(stri_detect_fixed(fhtml, "</div>")))
