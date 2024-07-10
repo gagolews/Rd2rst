@@ -2,7 +2,7 @@
 #                                                                              #
 #   Convert R Documentation to Markedly- (MyST) or reStructuredText (rST)      #
 #                                                                              #
-#   Copyleft (C) 2020-2022, Marek Gagolewski <https://www.gagolewski.com>      #
+#   Copyleft (C) 2020-2024, Marek Gagolewski <https://www.gagolewski.com>      #
 #                                                                              #
 #                                                                              #
 #   This program is free software: you can redistribute it and/or modify       #
@@ -32,7 +32,8 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     stopifnot(stri_detect_regex(fhtml[w2], "^<h2.*>.*</h2>$"))
     title <- stri_match_first_regex(fhtml[w2], "^<h2.*>(.*)</h2>$")[, 2]
 
-    fhtml <- stri_replace_all_fixed(fhtml, '<body><div class="container">', '<body>')
+    fhtml <- stri_replace_all_fixed(fhtml, '<body><div class="container"><main>', '<body>')
+    fhtml <- stri_replace_all_fixed(fhtml, '</main>', '')
     i <- max(which(stri_detect_fixed(fhtml, "</div>")))
     fhtml[i] <- stri_replace_all_fixed(fhtml[i], '</div>', '')
 
@@ -40,9 +41,9 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
     fhtml[w1] <- sprintf("<h1>%s: %s</h1>", bname, title)
     fhtml[w2] <- ""
 
-    # Remove link to the index page:
-    stopifnot(stri_detect_fixed(fhtml[length(fhtml)-2], "00Index.html"))
-    fhtml <- fhtml[-(length(fhtml)-2)]
+    # Remove the link to the index page:
+    stopifnot(stri_detect_fixed(fhtml[length(fhtml)-3], "00Index.html"))
+    fhtml <- fhtml[-(length(fhtml)-3)]
 
 
     fhtml <- stri_replace_all_regex(fhtml, "<code id=\".*?\">", "<code>")
