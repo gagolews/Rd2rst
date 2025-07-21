@@ -1,8 +1,8 @@
 Package: Rd2rst
 Type: Package
 Title: Convert R Documentation to Markedly- (MyST) or reStructured- (rST) Text
-Version: 0.1.0.9008
-Date: 2024-07-10
+Version: 0.1.0.9009
+Date: 2025-07-21
 Authors@R: c(
     person("Marek", "Gagolewski",
         role = c("aut", "cre", "cph"),

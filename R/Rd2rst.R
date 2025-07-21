@@ -2,7 +2,7 @@
 #                                                                              #
 #   Convert R Documentation to Markedly- (MyST) or reStructuredText (rST)      #
 #                                                                              #
-#   Copyleft (C) 2020-2024, Marek Gagolewski <https://www.gagolewski.com>      #
+#   Copyleft (C) 2020-2025, Marek Gagolewski <https://www.gagolewski.com>      #
 #                                                                              #
 #                                                                              #
 #   This program is free software: you can redistribute it and/or modify       #
@@ -48,7 +48,7 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
 
     fhtml <- stri_replace_all_regex(fhtml, "<code id=\".*?\">", "<code>")
 
-    marek_pkgs <- c("stringi", "genieclust", "stringx", "realtest")
+    marek_pkgs <- c("stringi", "genieclust", "stringx", "realtest", "quitefastmst")
 
     # deal with aliases first
     # ../../stringi/help/xxx.html ->

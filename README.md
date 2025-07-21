@@ -12,6 +12,7 @@ This package in its current version is not intended to serve any
 purpose other than generating the R API documentation
 of the
 [genieclust](https://genieclust.gagolewski.com),
+[quitefastmst](https://quitefastmst.gagolewski.com),
 [stringi](https://stringi.gagolewski.com),
 [stringx](https://stringx.gagolewski.com),
 and [realtest](https://realtest.gagolewski.com)
