@@ -48,7 +48,7 @@ html_process_manpage <- function(package, fhtml, bname, remove_code_link, output
 
     fhtml <- stri_replace_all_regex(fhtml, "<code id=\".*?\">", "<code>")
 
-    marek_pkgs <- c("stringi", "genieclust", "stringx", "realtest", "quitefastmst")
+    marek_pkgs <- c("stringi", "genieclust", "stringx", "realtest", "quitefastmst", "lumbermark")
 
     # deal with aliases first
     # ../../stringi/help/xxx.html ->
